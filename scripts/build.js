@@ -83,7 +83,11 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
         ].join('\n');
 
         // Inject into template
-        let output = template
+        // Add cache buster to CSS to force reload
+        const cacheBuster = Date.now();
+        l = template.replace('href="../style.css"', `href="../style.css?v=${cacheBuster}"`);
+
+        let output = l
             .replace(/{{TITLE}}/g, title)
             .replace(/{{METADATA_BLOCK}}/g, metadataBlock) // Replaces the whole block in template
             .replace(/{{CONTENT}}/g, htmlContent);
