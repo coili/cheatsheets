@@ -215,3 +215,33 @@ tr:hover {
     background-color: #111;
     color: #fff;
 }
+
+@media (max-width: 768px) {
+    body {
+        padding: 5px;
+        font-size: 13px;
+    }
+
+    .header-box,
+    pre[style*="text-align: center;"] {
+        display: none;
+    }
+
+    .content-wrapper {
+        padding: 10px;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .markdown-body pre {
+        overflow-x: auto;
+        padding: 10px;
+    }
+
+    h1,
+    h2,
+    h3 {
+        margin-top: 15px;
+        font-size: 1.2em;
+    }
+}
