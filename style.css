@@ -47,7 +47,6 @@ a {
 a:hover {
     background-color: #b46eff;
     color: #000000;
-    cursor: help;
 }
 
 
@@ -227,10 +226,6 @@ tr:hover {
     margin: 20px auto;
 }
 
-.mobile-nav {
-    display: none;
-}
-
 @media (max-width: 768px) {
     body {
         padding: 5px;
@@ -240,23 +235,6 @@ tr:hover {
     .header-box,
     pre[style*="text-align: center;"] {
         display: none;
-    }
-
-    /* Show Mobile Nav */
-    .mobile-nav {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-        margin-top: 50px;
-    }
-
-    .mobile-nav a {
-        font-size: 1.4em;
-        padding: 10px;
-        border-bottom: 2px dashed #b46eff;
-        width: 80%;
-        text-align: center;
     }
 
     .content-wrapper {
