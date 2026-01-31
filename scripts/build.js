@@ -8,7 +8,7 @@ const OUTPUT_DIR = path.join(__dirname, '../blog');
 const TEMPLATE_PATH = path.join(__dirname, '../templates/post.html');
 
 // Ensure output dir exists
-if (!fs.existsSync(OUTPUT_DIR)){
+if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
@@ -20,7 +20,7 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
     if (path.extname(file) === '.md') {
         const filePath = path.join(POSTS_DIR, file);
         const content = fs.readFileSync(filePath, 'utf8');
-        
+
         // Extract Title (first h1 or filename)
         let title = file.replace('.md', '');
         const titleMatch = content.match(/^# (.*$)/m);
@@ -31,11 +31,28 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
         // Convert MD to HTML
         const htmlContent = marked.parse(content);
 
+        // Generate Metadata Block
+        const dateStr = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const metadata = [
+            { label: 'FILE', value: file },
+            { label: 'AUTHOR', value: 'coili' }, // Hardcoded as per user preference
+            { label: 'DATE', value: dateStr }
+        ];
+
+        // Find max label length to align colons
+        const maxLabelLen = Math.max(...metadata.map(m => m.label.length));
+
+        // Build the block string
+        const metadataBlock = metadata.map(m => {
+            const spaces = ' '.repeat(maxLabelLen - m.label.length);
+            // standard spacing: Label + spaces + " :      " + value
+            return `* ${m.label}${spaces} :      ${m.value}`;
+        }).join('\n');
+
         // Inject into template
         let output = template
             .replace(/{{TITLE}}/g, title)
-            .replace(/{{FILENAME}}/g, file)
-            .replace(/{{DATE}}/g, new Date().toLocaleDateString())
+            .replace(/{{METADATA_BLOCK}}/g, metadataBlock) // Replaces the whole block in template
             .replace(/{{CONTENT}}/g, htmlContent);
 
         // Save
