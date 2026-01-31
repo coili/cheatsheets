@@ -31,23 +31,46 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
         // Convert MD to HTML
         const htmlContent = marked.parse(content);
 
-        // Generate Metadata Block
+        // Generate Metadata Block (Box Style)
         const dateStr = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         const metadata = [
             { label: 'FILE', value: file },
-            { label: 'AUTHOR', value: 'coili' }, // Hardcoded as per user preference
-            { label: 'DATE', value: dateStr }
+            { label: 'DATE', value: dateStr },
+            { label: 'AUTHOR', value: 'coili' }
         ];
 
-        // Find max label length to align colons
-        const maxLabelLen = Math.max(...metadata.map(m => m.label.length));
+        // Box Configuration
+        const boxWidth = 52; // Inner width
+        const borderTop = ' ┌────── FILE INFO ' + '─'.repeat(boxWidth - 19) + '┐';
+        const borderBot = ' └' + '─'.repeat(boxWidth) + '┘';
+        const emptyLine = ' │' + ' '.repeat(boxWidth) + '│';
 
-        // Build the block string
-        const metadataBlock = metadata.map(m => {
-            const spaces = ' '.repeat(maxLabelLen - m.label.length);
-            // standard spacing: Label + spaces + " :      " + value
-            return `* ${m.label}${spaces} :      ${m.value}`;
-        }).join('\n');
+        // Content Lines
+        const contentLines = metadata.map(m => {
+            // Format: "   LABEL........: Value"
+            const prefix = `   ${m.label}`;
+            const dotsCount = 16 - prefix.length; // Align colons at specific char
+            const dots = '.'.repeat(dotsCount > 0 ? dotsCount : 0);
+
+            let lineContent = `${prefix}${dots}: ${m.value}`;
+
+            // Pad the right side to fit box
+            const padding = boxWidth - lineContent.length;
+            if (padding < 0) {
+                // Truncate if too long (rare)
+                lineContent = lineContent.substring(0, boxWidth - 3) + '...';
+                return ' │' + lineContent + '│';
+            }
+            return ' │' + lineContent + ' '.repeat(padding) + '│';
+        });
+
+        const metadataBlock = [
+            borderTop,
+            emptyLine,
+            ...contentLines,
+            emptyLine,
+            borderBot
+        ].join('\n');
 
         // Inject into template
         let output = template
