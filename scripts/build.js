@@ -96,7 +96,7 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
 });
 
 // Generate Index (Optional - simple list)
-let indexHtml = `<!DOCTYPE html><html><head><link rel="stylesheet" href="../style.css"></head><body><pre>
+let indexHtml = `<!DOCTYPE html><html><head><link rel="stylesheet" href="../stylee.css"></head><body><pre>
 <span style="color: #555;">/* INDEX OF /blog/ */</span>
 
 `;
