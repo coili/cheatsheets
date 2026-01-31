@@ -1,11 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 const { marked } = require('marked');
+const { markedHighlight } = require('marked-highlight');
+const hljs = require('highlight.js');
 
 // Configuration
 const POSTS_DIR = path.join(__dirname, '../posts');
 const OUTPUT_DIR = path.join(__dirname, '../blog');
 const TEMPLATE_PATH = path.join(__dirname, '../templates/post.html');
+
+// Configure Marked with Highlight.js
+marked.use(markedHighlight({
+    langPrefix: 'hljs language-',
+    highlight(code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+        return hljs.highlight(code, { language }).value;
+    }
+}));
 
 // Ensure output dir exists
 if (!fs.existsSync(OUTPUT_DIR)) {
