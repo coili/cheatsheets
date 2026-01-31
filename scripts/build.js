@@ -162,6 +162,21 @@ generatedPosts.forEach((post, index) => {
     }
 });
 
+let mobileList = `
+    <div class="mobile-nav">
+        <h1>BLOG INDEX</h1>
+`;
+generatedPosts.forEach(post => {
+    let displayTitle = post.title;
+    const pathParts = post.path.split('/');
+    if (pathParts.length > 1) {
+        displayTitle = `[${pathParts[0].toUpperCase()}] ${post.title}`;
+    }
+    mobileList += `<a href="${post.path}">${displayTitle}</a>\n`;
+});
+mobileList += `<a href="../index.html">[..] Back</a></div>`;
+
+
 let indexHtml = `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -170,6 +185,7 @@ let indexHtml = `<!DOCTYPE html>
     <link rel="stylesheet" href="../style.css?v=${Date.now()}">
 </head>
 <body>
+    ${mobileList}
     <pre style="text-align: center;">
 
 <span style="color: #555;">/* INDEX OF /blog/ */</span>
