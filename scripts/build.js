@@ -173,6 +173,11 @@ let indexHtml = `<!DOCTYPE html>
     <link rel="stylesheet" href="../style.css?v=${Date.now()}">
 </head>
 <body>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <a href="../index.html">[HOME]</a>
+    </div>
+
     <pre style="text-align: center;">
 
 <span style="color: #555;">/* INDEX OF /blog/ */</span>
