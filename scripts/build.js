@@ -26,14 +26,35 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 // Read template
 const template = fs.readFileSync(TEMPLATE_PATH, 'utf8');
 
+// Recursive function to walk directories
+function walkDir(dir, callback) {
+    fs.readdirSync(dir).forEach(f => {
+        let dirPath = path.join(dir, f);
+        let isDirectory = fs.statSync(dirPath).isDirectory();
+        isDirectory ? walkDir(dirPath, callback) : callback(path.join(dir, f));
+    });
+}
+
+// Track generated files for index
+const generatedPosts = [];
+
 // Process files
-fs.readdirSync(POSTS_DIR).forEach(file => {
-    if (path.extname(file) === '.md') {
-        const filePath = path.join(POSTS_DIR, file);
-        const content = fs.readFileSync(filePath, 'utf8');
+walkDir(POSTS_DIR, (filePath) => {
+    const relativePath = path.relative(POSTS_DIR, filePath);
+    const outputFilePath = path.join(OUTPUT_DIR, relativePath);
+    const outputDir = path.dirname(outputFilePath);
+
+    // Ensure target subdirectory exists
+    if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    if (path.extname(filePath) === '.md') {
+        // Process Markdown
+        let content = fs.readFileSync(filePath, 'utf8');
 
         // Extract Title and Category
-        let title = file.replace('.md', '');
+        let title = path.basename(filePath).replace('.md', '');
         let category = 'Uncategorized'; // Default
 
         const titleMatch = content.match(/^# (.*$)/m);
@@ -46,15 +67,20 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
             category = categoryMatch[1].trim();
         }
 
+        // Support Obsidian-style images ![[path]] -> ![](path) and fix backslashes
+        content = content.replace(/!\[\[(.*?)\]\]/g, (match, p1) => {
+            const cleanPath = p1.replace(/\\/g, '/');
+            return `![](${cleanPath})`;
+        });
+
         // Convert MD to HTML
-        // Remove the Category line from content to avoid displaying it twice
         const cleanContent = content.replace(/^Category:\s*(.*)$/m, '');
         const htmlContent = marked.parse(cleanContent);
 
         // Generate Metadata Block (Box Style)
         const dateStr = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         const metadata = [
-            { label: 'FILE', value: file },
+            { label: 'FILE', value: path.basename(filePath) },
             { label: 'DATE', value: dateStr },
             { label: 'AUTHOR', value: 'coili' },
             { label: 'CAT', value: category }
@@ -68,18 +94,14 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
 
         // Content Lines
         const contentLines = metadata.map(m => {
-            // Calculate raw lengths for alignment
             const prefix = `   ${m.label}`;
             const dotsCount = 16 - prefix.length;
             const dots = '.'.repeat(dotsCount > 0 ? dotsCount : 0);
 
-            // Raw content for padding calc
             const rawContent = `${prefix}${dots}: ${m.value}`;
             const padding = boxWidth - rawContent.length;
             const safePadding = padding >= 0 ? padding : 0;
 
-            // HTML Styled Content
-            // Format: "   <span class="key">LABEL</span>......: <span class="val">Value</span>"
             const styledContent = `   <span class="key">${m.label}</span>${dots}<span class="box-border">:</span> <span class="val">${m.value}</span>` + ' '.repeat(safePadding);
 
             return ' <span class="box-border">║</span>' + styledContent + '<span class="box-border">║</span>';
@@ -93,19 +115,53 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
             borderBot
         ].join('\n');
 
-        // Inject into template
-        // Add cache buster to CSS to force reload
-        const cacheBuster = Date.now();
-        const outputWithCache = template.replace('href="../style.css"', `href="../style.css?v=${cacheBuster}"`);
+        // Calculate depth for CSS path adjustment
+        // blog/file.html -> depth 0 -> ../style.css
+        // blog/subdir/file.html -> depth 1 -> ../../style.css
+        const depth = relativePath.split(path.sep).length - 1;
+        const cssPath = '../'.repeat(depth + 1) + 'style.css';
 
+        // Add cache buster
+        const cacheBuster = Date.now();
+        const outputWithCache = template.replace('href="../style.css"', `href="${cssPath}?v=${cacheBuster}"`);
+
+        // Fix "Back to root" links based on depth
+        const rootPath = '../'.repeat(depth) + 'index.html';
+        // Note: The template has hardcoded [..] Back to root pointing to ../index.html
+        // We might want to fix this dynamically too, but for now let's handle CSS.
+        // Actually, let's fix the back link too.
         let output = outputWithCache
+            .replace(/href="\.\.\/index\.html"/g, `href="${rootPath}"`)
             .replace(/{{TITLE}}/g, title)
-            .replace(/{{METADATA_BLOCK}}/g, metadataBlock) // Replaces the whole block in template
+            .replace(/{{METADATA_BLOCK}}/g, metadataBlock)
             .replace(/{{CONTENT}}/g, htmlContent);
 
-        // Save
-        const outputFilename = file.replace('.md', '.html');
-        fs.writeFileSync(path.join(OUTPUT_DIR, outputFilename), output);
-        console.log(`[+] Generated: blog/${outputFilename}`);
+        const finalOutputFilename = outputFilePath.replace('.md', '.html');
+        fs.writeFileSync(finalOutputFilename, output);
+        console.log(`[+] Generated: ${path.relative(process.cwd(), finalOutputFilename)}`);
+
+        // Add to index list (relative to blog root)
+        generatedPosts.push({
+            path: relativePath.replace('.md', '.html').replace(/\\/g, '/'),
+            title: title
+        });
+
+    } else {
+        // Copy other assets (images, etc)
+        fs.copyFileSync(filePath, outputFilePath);
+        console.log(`[>] Copied asset: ${relativePath}`);
     }
 });
+
+// Generate Index
+// Simple index at blog/index.html listing all posts recursively
+let indexHtml = `<!DOCTYPE html><html><head><link rel="stylesheet" href="../style.css?v=${Date.now()}"></head><body><pre>
+<span style="color: #555;">/* INDEX OF /blog/ */</span>
+
+`;
+generatedPosts.forEach(post => {
+    indexHtml += `<a href="${post.path}">[FILE] ${post.path}</a>\n`; // post.path includes subfolders
+});
+indexHtml += `\n<a href="../index.html">[..] Back</a></pre></body></html>`;
+fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml);
+console.log('[+] Index generated.');
