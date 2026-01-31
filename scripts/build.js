@@ -41,9 +41,11 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
 
         // Box Configuration
         const boxWidth = 52; // Inner width
-        const borderTop = ' <span class="box-border">┌──────</span> <span class="val">FILE INFO</span> <span class="box-border">' + '─'.repeat(boxWidth - 17) + '┐</span>';
-        const borderBot = ' <span class="box-border">└' + '─'.repeat(boxWidth) + '┘</span>';
-        const emptyLine = ' <span class="box-border">│' + ' '.repeat(boxWidth) + '│</span>';
+        // Box Configuration
+        const boxWidth = 52; // Inner width
+        const borderTop = ' <span class="box-border">╔══════</span> <span class="val">FILE INFO</span> <span class="box-border">' + '═'.repeat(boxWidth - 17) + '╗</span>';
+        const borderBot = ' <span class="box-border">╚' + '═'.repeat(boxWidth) + '╝</span>';
+        const emptyLine = ' <span class="box-border">║' + ' '.repeat(boxWidth) + '║</span>';
 
         // Content Lines
         const contentLines = metadata.map(m => {
@@ -61,7 +63,7 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
             // Format: "   <span class="key">LABEL</span>......: <span class="val">Value</span>"
             const styledContent = `   <span class="key">${m.label}</span>${dots}<span class="box-border">:</span> <span class="val">${m.value}</span>` + ' '.repeat(safePadding);
 
-            return ' <span class="box-border">│</span>' + styledContent + '<span class="box-border">│</span>';
+            return ' <span class="box-border">║</span>' + styledContent + '<span class="box-border">║</span>';
         });
 
         const metadataBlock = [

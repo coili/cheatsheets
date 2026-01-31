@@ -43,10 +43,12 @@ a:hover {
 .key {
     color: #b46eff;
     font-weight: bold;
+    text-shadow: 0 0 5px rgba(180, 110, 255, 0.5);
 }
 
 .val {
     color: #ffffff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .box-border {
