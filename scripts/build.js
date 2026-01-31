@@ -67,12 +67,19 @@ walkDir(POSTS_DIR, (filePath) => {
         const cleanContent = content.replace(/^Category:\s*(.*)$/m, '');
         const htmlContent = marked.parse(cleanContent);
 
+        // Reading Time Calculation
+        const plainText = cleanContent.replace(/#|\*|\[|\]|\(|\)|`|>|-/g, ''); // Simple strip
+        const wordCount = plainText.split(/\s+/).length;
+        const readTime = Math.ceil(wordCount / 200);
+        const readTimeStr = `${readTime} min`;
+
         const dateStr = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         const metadata = [
             { label: 'FILE', value: path.basename(filePath) },
             { label: 'DATE', value: dateStr },
             { label: 'AUTHOR', value: 'coili' },
-            { label: 'CAT', value: category }
+            { label: 'CAT', value: category },
+            { label: 'TIME', value: readTimeStr }
         ];
 
         const boxWidth = 52;
