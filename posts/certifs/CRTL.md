@@ -1,5 +1,5 @@
 # CRTL
-Category: CRTL
+Category: Certifications
 
 ## C2 Infrastructure
 
