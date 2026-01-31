@@ -1,4 +1,5 @@
 # Welcome to the Machine
+Category: Introduction
 
 This is the first article of the Ezine.
 It maintains the **raw** aesthetic of the terminal.

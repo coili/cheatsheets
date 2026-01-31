@@ -21,22 +21,32 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
         const filePath = path.join(POSTS_DIR, file);
         const content = fs.readFileSync(filePath, 'utf8');
 
-        // Extract Title (first h1 or filename)
+        // Extract Title and Category
         let title = file.replace('.md', '');
+        let category = 'Uncategorized'; // Default
+
         const titleMatch = content.match(/^# (.*$)/m);
         if (titleMatch) {
             title = titleMatch[1];
         }
 
+        const categoryMatch = content.match(/^Category:\s*(.*)$/m);
+        if (categoryMatch) {
+            category = categoryMatch[1].trim();
+        }
+
         // Convert MD to HTML
-        const htmlContent = marked.parse(content);
+        // Remove the Category line from content to avoid displaying it twice
+        const cleanContent = content.replace(/^Category:\s*(.*)$/m, '');
+        const htmlContent = marked.parse(cleanContent);
 
         // Generate Metadata Block (Box Style)
         const dateStr = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         const metadata = [
             { label: 'FILE', value: file },
             { label: 'DATE', value: dateStr },
-            { label: 'AUTHOR', value: 'coili' }
+            { label: 'AUTHOR', value: 'coili' },
+            { label: 'CAT', value: category }
         ];
 
         // Box Configuration
