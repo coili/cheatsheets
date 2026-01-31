@@ -157,6 +157,7 @@ generatedPosts.forEach((post, index) => {
 let indexHtml = `<!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta charset="UTF-8">
     <title>Blog Index</title>
     <link rel="stylesheet" href="../style.css?v=${Date.now()}">
 </head>
