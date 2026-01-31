@@ -67,11 +67,11 @@ walkDir(POSTS_DIR, (filePath) => {
         const cleanContent = content.replace(/^Category:\s*(.*)$/m, '');
         const htmlContent = marked.parse(cleanContent);
 
-        // Reading Time Calculation
-        const plainText = cleanContent.replace(/#|\*|\[|\]|\(|\)|`|>|-/g, ''); // Simple strip
+        const plainText = cleanContent.replace(/#|\*|\[|\]|\(|\)|`|>|-/g, '');
         const wordCount = plainText.split(/\s+/).length;
         const readTime = Math.ceil(wordCount / 200);
-        const readTimeStr = `${readTime} min`;
+        const unit = readTime > 1 ? 'mins' : 'min';
+        const readTimeStr = `${readTime} ${unit}`;
 
         const dateStr = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         const metadata = [
@@ -79,7 +79,7 @@ walkDir(POSTS_DIR, (filePath) => {
             { label: 'DATE', value: dateStr },
             { label: 'AUTHOR', value: 'coili' },
             { label: 'CAT', value: category },
-            { label: 'TIME', value: readTimeStr }
+            { label: 'TIME TO READ', value: readTimeStr }
         ];
 
         const boxWidth = 52;
