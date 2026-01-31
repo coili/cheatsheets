@@ -141,7 +141,6 @@ generatedPosts.forEach((post, index) => {
     const hexIndex = (index + 1).toString(16).padStart(2, '0').toUpperCase();
     const prefix = `   [0x${hexIndex}]... `;
 
-    // Extract folder name if present (e.g. "windows/file.html" -> "WINDOWS")
     let displayTitle = post.title;
     const pathParts = post.path.split('/');
     if (pathParts.length > 1) {
@@ -151,10 +150,8 @@ generatedPosts.forEach((post, index) => {
 
     const linkStr = `<a href="${post.path}">${displayTitle}</a>`;
 
-    // Visible length calculation (ignoring HTML tags in length)
     const visibleLen = prefix.length + displayTitle.length;
     const padding = boxWidth - visibleLen;
-    // Truncate if too long
     if (padding < 0) {
         const maxTitle = boxWidth - prefix.length - 3;
         const truncatedTitle = displayTitle.substring(0, maxTitle) + '...';
