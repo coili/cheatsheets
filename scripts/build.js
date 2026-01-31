@@ -131,27 +131,38 @@ walkDir(POSTS_DIR, (filePath) => {
 });
 
 // Generate Index
-const boxWidth = 52;
-const borderTopI = ' <span class="box-border">┌────── MENU ────────────────────────────────────────┐</span>';
+const boxWidth = 70;
+const borderTopI = ' <span class="box-border">┌────── MENU ──────────────────────────────────────────────────────────┐</span>';
 const borderBotI = ' <span class="box-border">└' + '─'.repeat(boxWidth) + '┘</span>';
 const emptyLineI = ' <span class="box-border">│</span>' + ' '.repeat(boxWidth) + '<span class="box-border">│</span>';
 
 let menuContent = '';
 generatedPosts.forEach((post, index) => {
-    // Format: "   [0x01]... "
     const hexIndex = (index + 1).toString(16).padStart(2, '0').toUpperCase();
     const prefix = `   [0x${hexIndex}]... `;
 
-    // Link: <a href="path">Title</a>
-    const linkStr = `<a href="${post.path}">${post.title}</a>`;
+    // Extract folder name if present (e.g. "windows/file.html" -> "WINDOWS")
+    let displayTitle = post.title;
+    const pathParts = post.path.split('/');
+    if (pathParts.length > 1) {
+        const folder = pathParts[0].toUpperCase();
+        displayTitle = `[${folder}] ${post.title}`;
+    }
 
-    // For padding calculation, we need length of visible text
-    // "   [0x01]... Title"
-    const visibleLen = prefix.length + post.title.length;
+    const linkStr = `<a href="${post.path}">${displayTitle}</a>`;
+
+    // Visible length calculation (ignoring HTML tags in length)
+    const visibleLen = prefix.length + displayTitle.length;
     const padding = boxWidth - visibleLen;
-    const safePadding = padding >= 0 ? padding : 0;
-
-    menuContent += ' <span class="box-border">│</span>' + prefix + linkStr + ' '.repeat(safePadding) + '<span class="box-border">│</span>\n';
+    // Truncate if too long
+    if (padding < 0) {
+        const maxTitle = boxWidth - prefix.length - 3;
+        const truncatedTitle = displayTitle.substring(0, maxTitle) + '...';
+        const truncatedLink = `<a href="${post.path}">${truncatedTitle}</a>`;
+        menuContent += ' <span class="box-border">│</span>' + prefix + truncatedLink + ' <span class="box-border">│</span>\n';
+    } else {
+        menuContent += ' <span class="box-border">│</span>' + prefix + linkStr + ' '.repeat(padding) + '<span class="box-border">│</span>\n';
+    }
 });
 
 let indexHtml = `<!DOCTYPE html>
