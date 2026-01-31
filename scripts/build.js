@@ -73,6 +73,10 @@ walkDir(POSTS_DIR, (filePath) => {
             return `![](${cleanPath})`;
         });
 
+        // Auto-break lines ending in ; for "Ezine lists" (heuristic: lines starting with **)
+        // Replaces ";\n" with ";<br>\n" if the line starts with **
+        content = content.replace(/^(\*\*.*?;)\s*$/gm, '$1  ');
+
         // Convert MD to HTML
         const cleanContent = content.replace(/^Category:\s*(.*)$/m, '');
         const htmlContent = marked.parse(cleanContent);
