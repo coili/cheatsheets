@@ -94,17 +94,3 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
         console.log(`[+] Generated: blog/${outputFilename}`);
     }
 });
-
-// Generate Index (Optional - simple list)
-let indexHtml = `<!DOCTYPE html><html><head><link rel="stylesheet" href="../stylee.css"></head><body><pre>
-<span style="color: #555;">/* INDEX OF /blog/ */</span>
-
-`;
-fs.readdirSync(OUTPUT_DIR).forEach(file => {
-    if (file !== 'index.html' && file.endsWith('.html')) {
-        indexHtml += `<a href="${file}">[FILE] ${file}</a>\n`;
-    }
-});
-indexHtml += `\n<a href="../index.html">[..] Back</a></pre></body></html>`;
-fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml);
-console.log('[+] Index generated.');
