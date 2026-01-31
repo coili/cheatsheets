@@ -185,4 +185,12 @@ ${borderBotI}
 </html>`;
 
 fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml);
+const rootIndexPath = path.join(__dirname, '../index.html');
+if (fs.existsSync(rootIndexPath)) {
+    let rootIndexContent = fs.readFileSync(rootIndexPath, 'utf8');
+    rootIndexContent = rootIndexContent.replace(/href="style\.css.*?"/, `href="style.css?v=${Date.now()}"`);
+    fs.writeFileSync(rootIndexPath, rootIndexContent);
+    console.log('[+] Root index.html CSS updated.');
+}
+
 console.log('[+] Index generated.');
