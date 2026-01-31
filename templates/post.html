@@ -9,22 +9,23 @@
 </head>
 
 <body>
-    <div id="terminal-wrapper"
-        style="text-align: center; white-space: pre; font-family: 'Courier New', 'Consolas', monospace;">
 
+    <!-- Header Section (ASCII Art) -->
+    <pre class="header-box" style="text-align: center;">
+{{METADATA_BLOCK}}
+    </pre>
 
-        {{METADATA_BLOCK}}
+    <!-- Content Section -->
+    <div class="content-wrapper" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+        <a href="../index.html" style="display: block; margin-bottom: 20px;">[..] Back to root</a>
 
-
-        <div class="content" style="text-align: left; display: inline-block; max-width: 800px; white-space: normal;">
-            <a href="../index.html">[..] Back to root</a>
-
+        <div class="markdown-body">
             {{CONTENT}}
-
-            <a href="../index.html">[..] Back to root</a>
         </div>
 
+        <a href="../index.html" style="display: block; margin-top: 40px;">[..] Back to root</a>
     </div>
+
 </body>
 
 </html>
