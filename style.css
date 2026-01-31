@@ -216,6 +216,13 @@ tr:hover {
     color: #fff;
 }
 
+.markdown-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
 @media (max-width: 768px) {
     body {
         padding: 5px;
