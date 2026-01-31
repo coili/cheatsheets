@@ -18,10 +18,47 @@ strong,
 b {
     color: #ffffff;
     font-weight: bold;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
-    background-color: rgba(180, 110, 255, 0.1);
-    padding: 0 4px;
-    border-radius: 4px;
+    /* Removed background and reduced glow for less aggression */
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+/* ... existing code ... */
+
+.hljs-link {
+    text-decoration: underline;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    border: 1px solid #444;
+}
+
+th,
+td {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #1a1a1a;
+    color: #b46eff;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #b46eff;
+}
+
+tr:nth-child(even) {
+    background-color: #080808;
+}
+
+tr:hover {
+    background-color: #111;
+    color: #fff;
 }
 
 
