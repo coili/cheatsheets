@@ -27,8 +27,66 @@ a:hover {
     cursor: help;
 }
 
+
 .cursor {
     color: #b46eff;
     animation: blink 1s step-end infinite;
 }
-@keyframes blink { 50% { opacity: 0; } }
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Header Colors */
+.key {
+    color: #b46eff;
+    font-weight: bold;
+}
+
+.val {
+    color: #ffffff;
+}
+
+.box-border {
+    color: #555;
+}
+
+/* Markdown Content Styling */
+h1,
+h2,
+h3 {
+    color: #ffffff;
+    border-bottom: 1px dashed #555;
+    padding-bottom: 5px;
+    margin-top: 30px;
+}
+
+code {
+    color: #b46eff;
+    font-family: inherit;
+}
+
+pre code {
+    border: 1px solid #333;
+    padding: 15px;
+    display: block;
+    color: #ccc;
+    margin: 10px 0;
+}
+
+blockquote {
+    border-left: 2px solid #b46eff;
+    padding-left: 15px;
+    color: #888;
+    font-style: italic;
+}
+
+ul {
+    list-style-type: square;
+}
+
+li {
+    margin-bottom: 5px;
+}

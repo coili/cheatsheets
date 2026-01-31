@@ -41,27 +41,27 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
 
         // Box Configuration
         const boxWidth = 52; // Inner width
-        const borderTop = ' ┌────── FILE INFO ' + '─'.repeat(boxWidth - 17) + '┐';
-        const borderBot = ' └' + '─'.repeat(boxWidth) + '┘';
-        const emptyLine = ' │' + ' '.repeat(boxWidth) + '│';
+        const borderTop = ' <span class="box-border">┌──────</span> <span class="val">FILE INFO</span> <span class="box-border">' + '─'.repeat(boxWidth - 17) + '┐</span>';
+        const borderBot = ' <span class="box-border">└' + '─'.repeat(boxWidth) + '┘</span>';
+        const emptyLine = ' <span class="box-border">│' + ' '.repeat(boxWidth) + '│</span>';
 
         // Content Lines
         const contentLines = metadata.map(m => {
-            // Format: "   LABEL........: Value"
+            // Calculate raw lengths for alignment
             const prefix = `   ${m.label}`;
-            const dotsCount = 16 - prefix.length; // Align colons at specific char
+            const dotsCount = 16 - prefix.length;
             const dots = '.'.repeat(dotsCount > 0 ? dotsCount : 0);
 
-            let lineContent = `${prefix}${dots}: ${m.value}`;
+            // Raw content for padding calc
+            const rawContent = `${prefix}${dots}: ${m.value}`;
+            const padding = boxWidth - rawContent.length;
+            const safePadding = padding >= 0 ? padding : 0;
 
-            // Pad the right side to fit box
-            const padding = boxWidth - lineContent.length;
-            if (padding < 0) {
-                // Truncate if too long (rare)
-                lineContent = lineContent.substring(0, boxWidth - 3) + '...';
-                return ' │' + lineContent + '│';
-            }
-            return ' │' + lineContent + ' '.repeat(padding) + '│';
+            // HTML Styled Content
+            // Format: "   <span class="key">LABEL</span>......: <span class="val">Value</span>"
+            const styledContent = `   <span class="key">${m.label}</span>${dots}<span class="box-border">:</span> <span class="val">${m.value}</span>` + ' '.repeat(safePadding);
+
+            return ' <span class="box-border">│</span>' + styledContent + '<span class="box-border">│</span>';
         });
 
         const metadataBlock = [
