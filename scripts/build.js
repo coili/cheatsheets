@@ -41,7 +41,7 @@ fs.readdirSync(POSTS_DIR).forEach(file => {
 
         // Box Configuration
         const boxWidth = 52; // Inner width
-        const borderTop = ' ┌────── FILE INFO ' + '─'.repeat(boxWidth - 19) + '┐';
+        const borderTop = ' ┌────── FILE INFO ' + '─'.repeat(boxWidth - 17) + '┐';
         const borderBot = ' └' + '─'.repeat(boxWidth) + '┘';
         const emptyLine = ' │' + ' '.repeat(boxWidth) + '│';
 
