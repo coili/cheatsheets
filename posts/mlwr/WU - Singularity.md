@@ -148,7 +148,7 @@ Si on reprend le code du reverse-shell, on trouve : `firefox-updater`.
 
 ## Discord 
 
-![[Pasted image 20260216221211.png]]
+![[..\images\Pasted image 20260216221211.png]]
 ## Yara 
 
-![[Pasted image 20260216221236.png]]
+![[..\images\Pasted image 20260216221236.png]]
